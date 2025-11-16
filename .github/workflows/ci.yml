@@ -17,7 +17,7 @@ jobs:
       uses: actions/setup-go@v6
 
     - name: Build
-      run:|
+      run: |
         go build cmd/scanner/main.go
         go build cmd/processor/processor.go
 
