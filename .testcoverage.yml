@@ -1,0 +1,11 @@
+---
+profile: .reports/coverage.out
+threshold:
+  file: 80
+  package: 80
+  total: 80
+
+exclude:
+  paths:
+    - ^cmd/scanner/main.go$
+    - ^pkg/scanning/types.go$

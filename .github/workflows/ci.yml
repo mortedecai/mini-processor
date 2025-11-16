@@ -1,0 +1,30 @@
+name: ci.yml
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+
+    - name: Setup Go
+      uses: actions/setup-go@v6
+
+    - name: Build
+      run:|
+        go build cmd/scanner/main.go
+        go build cmd/processor/processor.go
+
+    - name: Test
+      run: ./project test
+
+    - name: Validate Coverage
+      uses: go-test-coverage/go-test-coverage@v2
+      with:
+        config: ./..testcoverage.yml
