@@ -25,6 +25,6 @@ jobs:
       run: ./project test
 
     - name: Validate Coverage
-      uses: go-test-coverage/go-test-coverage@v2
+      uses: vladopajic/go-test-coverage@v2
       with:
-        config: ./..testcoverage.yml
+        config: ./.testcoverage.yml
