@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# Prints the help data for the project script.
+# NOTE: Does not exit here; relies on the caller to exit with an error code where appropriate.
+usage() {
+    echo "./project usage information"
+    echo ""
+    echo "./project <command> <options>"
+    echo ""
+    echo "  Where <command> is one of:"
+    echo "    * help - print this message"
+    echo "    * test - run the tests and collect coverage data in .reports/"
+    echo "    * coverage - run the tests and display the coverage information from .reports/"
+    echo "    * start - starts the project via docker compose"
+    echo "    * stop - stops the project via docker compose"
+}
+
+# Main execution point for the project script.
+# Responsible for setting up variables which are used via sub-functions and calling the appropriate function.
+handle_exec() {
+  # Set up local variables for re-use
+  local _PROJECT_ROOT_=$(git rev-parse --show-toplevel)
+  local _REPORTS_DIR_=${_PROJECT_ROOT_}/.reports/
+  local _DOCKER_COMPOSE_FILE_=${_PROJECT_ROOT_}/docker-compose.yml
+
+  local _ERR_CODE_BAD_CMD_=1
+
+  # Remove the ./project from the command
+  local _cmd=$1
+  shift
+
+  if [[ $(type -t "exec_${_cmd}") != function ]]; then
+    echo ""
+    echo "Unknown command: ${_cmd}"
+    echo ""
+    usage
+    exit ${_ERR_CODE_BAD_CMD_}
+  fi
+
+  exec_${_cmd}
+}
+
+# Prints the usage message and then exits normally as `help` is a valid command.
+exec_help() {
+  usage
+}
+
+# Runs the tests and gathers coverage information in <project root>/.reports/coverage.out
+exec_test() {
+  echo "Executing project tests..."
+  echo ""
+  rm -fr ${_REPORTS_DIR_}
+  mkdir ${_REPORTS_DIR_}
+
+  go test -covermode=count -coverprofile=${_REPORTS_DIR_}/coverage.out ./...
+}
+
+# Runs the tests and displays the html coverage report.
+exec_coverage() {
+  exec_test
+  echo "Displaying coverage in HTML format..."
+  echo ""
+  go tool cover -html=${_REPORTS_DIR_}/coverage.out
+}
+
+# Runs the system via docker compose.
+# The system is run in daemon mode so that additional actions can be taken from the same command prompt.
+exec_start() {
+  echo "Running locally via docker compose in daemon status"
+  docker compose -f ${_DOCKER_COMPOSE_FILE_} up -d
+}
+
+# Terminates the execution of the project via docker compose.
+exec_stop() {
+  echo "Terminating locally running project via docker compose"
+  docker compose -f ${_DOCKER_COMPOSE_FILE_} down
+}
+
+# Run the execution loop
+handle_exec "$@"
