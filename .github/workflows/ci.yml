@@ -29,6 +29,11 @@ jobs:
       with:
         config: ./.testcoverage.yml
 
+    - name: Print Coverage Summary
+      run: |
+        echo "## Test Coverage" >> ${GITHUB_STEP_SUMMARY}
+        echo "$(go tool cover -func=.reports/coverage.out)" >> ${GITHUB_STEP_SUMMARY}
+
   validate-compose:
     runs-on: ubuntu-latest
 
