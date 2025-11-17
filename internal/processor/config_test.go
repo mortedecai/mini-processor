@@ -15,12 +15,18 @@ const (
 	VAR_TOPIC_ID        = "PUBSUB_TOPIC_ID"
 )
 
-type envMap map[string]*string
-
+// str_ptr converts a provided string, `s`, to a string pointer.
 func str_ptr(s string) *string {
 	return &s
 }
 
+// envMap provides the ability to register environment variables to create or remove before or after test execution.
+type envMap map[string]*string
+
+// SetupEnv processes the envMap, `e`, and sets up the local environment according to its contents and returns an envMap to undo the changes later.
+// Should a key have a `nil` value, the environment variable will be unset, otherwise the value will be set (or replaced).
+//
+// The returned envMap value can be used to restore the environment to its previous state in an AfterEach or deferred call.
 func (e envMap) SetupEnv() envMap {
 	restoreMap := envMap{}
 	for k, v := range e {
