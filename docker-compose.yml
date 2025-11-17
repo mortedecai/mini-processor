@@ -52,6 +52,7 @@ services:
     build:
       context: .
       dockerfile: ./cmd/processor/Dockerfile
+      no_cache: true
 
   # Use a postgres database to hold scan results.
   database:
@@ -63,7 +64,7 @@ services:
       POSTGRES_USER: censysTest
       POSTGRES_DB: censys_data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U agtRoot -d people"]
+      test: ["CMD-SHELL", "pg_isready -U censysTest -d censys_data"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -75,6 +76,7 @@ services:
     build:
       context: ./third_party/flyway/
       dockerfile: ./Dockerfile
+      no_cache: true
     command: -url=jdbc:postgresql://database:5432/censys_data migrate
     environment:
       FLYWAY_USER: censysTest
