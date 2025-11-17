@@ -82,7 +82,7 @@ exec_stop() {
 # NOTE: does not touch the mini-processor-scanner image as it should only need to be built once.
 exec_clean() {
   echo "Removing local docker images"
-  docker image rm mini-processor-flyway
+  docker image rm mini-processor-flyway mini-processor-processor
 }
 
 # Run the execution loop
