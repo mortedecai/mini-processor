@@ -7,6 +7,7 @@ import (
 
 type Config struct {
 	ProjectID      string `env:"PUBSUB_PROJECT_ID" validate:"required"`
+	TopicID        string `env:"PUBSUB_TOPIC_ID" validate:"required"`
 	SubscriptionID string `env:"PUBSUB_SUBSCRIPTION_ID" validate:"required"`
 }
 
@@ -15,13 +16,9 @@ func (c *Config) Validate() error {
 	return validate.Struct(c)
 }
 
-func ConfigFromEnv() (*Config, error) {
+// ConfigFromEnv returns a configuration object which has been pre-loaded from the environment.
+func ConfigFromEnv() *Config {
 	cfg := &Config{}
-	if err := env.Parse(cfg); err != nil {
-		return nil, err
-	}
-	if err := cfg.Validate(); err != nil {
-		return nil, err
-	}
-	return cfg, nil
+	env.Parse(cfg)
+	return cfg
 }
