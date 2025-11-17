@@ -19,7 +19,7 @@ func (e envMap) SetupEnv() envMap {
 	restoreMap := envMap{}
 	for k, v := range e {
 		if ev, found := os.LookupEnv(k); found {
-			restoreMap[k] = ev
+			restoreMap[k] = str_ptr(ev)
 		}
 		var err error
 		if v != nil {
