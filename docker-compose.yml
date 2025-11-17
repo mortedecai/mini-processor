@@ -41,6 +41,18 @@ services:
       context: .
       dockerfile: ./cmd/scanner/Dockerfile
 
+  # Runs the processor
+  processor:
+    depends_on:
+      mk-topic:
+        condition: service_completed_successfully
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub:8085
+      PUBSUB_PROJECT_ID: test-project
+    build:
+      context: .
+      dockerfile: ./cmd/processor/Dockerfile
+
   # Use a postgres database to hold scan results.
   database:
     image: postgres:18
