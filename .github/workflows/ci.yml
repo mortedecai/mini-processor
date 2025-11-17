@@ -28,3 +28,18 @@ jobs:
       uses: vladopajic/go-test-coverage@v2
       with:
         config: ./.testcoverage.yml
+
+  validate-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+
+      - name: Run Docker Compose
+        run: |
+          ./project start
+          ./project stop
