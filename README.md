@@ -1,6 +1,12 @@
 # Mini-Processor Takehome Project
 
-This README will be filled in later; removed the initial how-to instructions for brevity and initial commit.
+> NOTE: The go.mod file was left as github.com/censys/scan-takehome intentionally to avoid adding the dependency.
+
+## Assumptions
+
+1. It was ok to modify the `cmd/scanner/Dockerfile` to allow it to build with a newer version of go (the original README.md only mentioned not modifying `cmd/scanner/main.go`).
+2. It was ok to copy the original repo to this new repo for ease of testing / use.
+3. For the purposes of the testing assignment it was ok to mix integration & unit tests, whereas normally they would be separated, for time savings.
 
 ## Initial Setup
 
