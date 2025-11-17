@@ -13,6 +13,8 @@ usage() {
     echo "    * coverage - run the tests and display the coverage information from .reports/"
     echo "    * start - starts the project via docker compose"
     echo "    * stop - stops the project via docker compose"
+    echo ""
+    echo "    * clean - removes the project flyway image from the local docker cache"
 }
 
 # Main execution point for the project script.
@@ -74,6 +76,13 @@ exec_start() {
 exec_stop() {
   echo "Terminating locally running project via docker compose"
   docker compose -f ${_DOCKER_COMPOSE_FILE_} down
+}
+
+# Remove the local docker images which need to be rebuilt for local testing.
+# NOTE: does not touch the mini-processor-scanner image as it should only need to be built once.
+exec_clean() {
+  echo "Removing local docker images"
+  docker image rm mini-processor-flyway
 }
 
 # Run the execution loop

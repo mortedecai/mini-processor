@@ -40,3 +40,33 @@ services:
     build:
       context: .
       dockerfile: ./cmd/scanner/Dockerfile
+
+  # Use a postgres database to hold scan results.
+  database:
+    image: postgres:18
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: censysS4mpl3!
+      POSTGRES_USER: censysTest
+      POSTGRES_DB: censys_data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agtRoot -d people"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+
+  # Use flyway to manage migrations for the service / setup.
+  flyway:
+    build:
+      context: ./third_party/flyway/
+      dockerfile: ./Dockerfile
+    command: -url=jdbc:postgresql://database:5432/censys_data migrate
+    environment:
+      FLYWAY_USER: censysTest
+      FLYWAY_PASSWORD: censysS4mpl3!
+    depends_on:
+      database:
+        condition: service_healthy
