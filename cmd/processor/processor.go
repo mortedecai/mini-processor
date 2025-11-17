@@ -1,13 +1,14 @@
 package main
 
 import (
-	"fmt"
-)
-
-const (
-	msg = "Mini Processor Hello-World"
+	"github.com/censys/scan-takehome/internal/processor"
+	"go.uber.org/zap"
 )
 
 func main() {
-	fmt.Println(msg)
+	zap.ReplaceGlobals(zap.L().Named("processor"))
+	_, err := processor.New(processor.ConfigFromEnv())
+	if err != nil {
+		panic(err)
+	}
 }

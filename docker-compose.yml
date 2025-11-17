@@ -41,6 +41,21 @@ services:
       context: .
       dockerfile: ./cmd/scanner/Dockerfile
 
+  # Runs the processor
+  processor:
+    depends_on:
+      mk-topic:
+        condition: service_completed_successfully
+    environment:
+      PUBSUB_EMULATOR_HOST: pubsub:8085
+      PUBSUB_PROJECT_ID: test-project
+      PUBSUB_TOPIC_ID: scan-topic
+      PUBSUB_SUBSCRIPTION_ID: scan-sub
+    build:
+      context: .
+      dockerfile: ./cmd/processor/Dockerfile
+      no_cache: true
+
   # Use a postgres database to hold scan results.
   database:
     image: postgres:18
@@ -51,7 +66,7 @@ services:
       POSTGRES_USER: censysTest
       POSTGRES_DB: censys_data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U agtRoot -d people"]
+      test: ["CMD-SHELL", "pg_isready -U censysTest -d censys_data"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -63,6 +78,7 @@ services:
     build:
       context: ./third_party/flyway/
       dockerfile: ./Dockerfile
+      no_cache: true
     command: -url=jdbc:postgresql://database:5432/censys_data migrate
     environment:
       FLYWAY_USER: censysTest
