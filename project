@@ -10,7 +10,8 @@ usage() {
     echo "  Where <command> is one of:"
     echo "    * help - print this message"
     echo "    * test - run the tests and collect coverage data in .reports/"
-    echo "    * coverage - run the tests and display the coverage information from .reports/"
+    echo "    * coverage - run the tests and display the coverage information in HTML from .reports/"
+    echo "    * tcoverage - run the tests and display the coverage information in text from .reports/"
     echo "    * start - starts the project via docker compose"
     echo "    * stop - stops the project via docker compose"
     echo ""
@@ -48,13 +49,23 @@ exec_help() {
 }
 
 # Runs the tests and gathers coverage information in <project root>/.reports/coverage.out
+# Note: Strips the coverage data from cmd/scanner as it is provided code.
 exec_test() {
-  echo "Executing project tests..."
+  echo "Executing project tests (including integration tests)..."
   echo ""
   rm -fr ${_REPORTS_DIR_}
   mkdir ${_REPORTS_DIR_}
 
-  go test -covermode=count -coverprofile=${_REPORTS_DIR_}/coverage.out ./...
+  echo "Starting the pubsub emulator, topic and subscription creation for testing"
+  docker compose -f ${_DOCKER_COMPOSE_FILE_} up -d mk-subscription > /dev/null 2>&1
+
+  go test -covermode=count -coverprofile=${_REPORTS_DIR_}/coverage.orig ./...
+
+  echo "Tearing down the pubsub emulator, topic and subscription creation for testing"
+  docker compose -f ${_DOCKER_COMPOSE_FILE_} down > /dev/null 2>&1
+
+  echo "Removing scanner coverage numbers from coverage.out"
+  cat ${_REPORTS_DIR_}/coverage.orig | grep -v "scanner" > ${_REPORTS_DIR_}/coverage.out
 }
 
 # Runs the tests and displays the html coverage report.
@@ -63,6 +74,13 @@ exec_coverage() {
   echo "Displaying coverage in HTML format..."
   echo ""
   go tool cover -html=${_REPORTS_DIR_}/coverage.out
+}
+# Runs the tests and displays the text coverage report.
+exec_tcoverage() {
+  exec_test
+  echo "Test Coverage"
+  echo ""
+  go tool cover -func=${_REPORTS_DIR_}/coverage.out
 }
 
 # Runs the system via docker compose.

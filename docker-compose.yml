@@ -49,6 +49,8 @@ services:
     environment:
       PUBSUB_EMULATOR_HOST: pubsub:8085
       PUBSUB_PROJECT_ID: test-project
+      PUBSUB_TOPIC_ID: scan-topic
+      PUBSUB_SUBSCRIPTION_ID: scan-sub
     build:
       context: .
       dockerfile: ./cmd/processor/Dockerfile
