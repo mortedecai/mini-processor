@@ -44,9 +44,15 @@ services:
   # Runs the processor
   processor:
     depends_on:
-      mk-topic:
+      mk-subscription:
         condition: service_completed_successfully
     environment:
+      DATABASE_TYPE: postgres
+      DATABASE_USER: censysTest
+      DATABASE_PASSWORD: censysS4mpl3!
+      DATABASE_NAME: censys_data
+      DATABASE_PORT: 5432
+      DATABASE_HOST: database
       PUBSUB_EMULATOR_HOST: pubsub:8085
       PUBSUB_PROJECT_ID: test-project
       PUBSUB_TOPIC_ID: scan-topic

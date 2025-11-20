@@ -1,11 +1,10 @@
 package processor_test
 
 import (
-	"os"
-
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	. "github.com/censys/scan-takehome/_test"
 	"github.com/censys/scan-takehome/internal/processor"
 )
 
@@ -15,38 +14,9 @@ const (
 	VAR_TOPIC_ID        = "PUBSUB_TOPIC_ID"
 )
 
-// str_ptr converts a provided string, `s`, to a string pointer.
-func str_ptr(s string) *string {
-	return &s
-}
-
-// envMap provides the ability to register environment variables to create or remove before or after test execution.
-type envMap map[string]*string
-
-// SetupEnv processes the envMap, `e`, and sets up the local environment according to its contents and returns an envMap to undo the changes later.
-// Should a key have a `nil` value, the environment variable will be unset, otherwise the value will be set (or replaced).
-//
-// The returned envMap value can be used to restore the environment to its previous state in an AfterEach or deferred call.
-func (e envMap) SetupEnv() envMap {
-	restoreMap := envMap{}
-	for k, v := range e {
-		if ev, found := os.LookupEnv(k); found {
-			restoreMap[k] = str_ptr(ev)
-		}
-		var err error
-		if v != nil {
-			err = os.Setenv(k, *v)
-		} else {
-			err = os.Unsetenv(k)
-		}
-		Expect(err).ToNot(HaveOccurred())
-	}
-	return restoreMap
-}
-
 var _ = Describe("Config", func() {
 	DescribeTable("Configuration from environment validation",
-		func(vars envMap, expConfig *processor.Config, expErrRegex ...string) {
+		func(vars EnvMap, expConfig *processor.Config, expErrRegex ...string) {
 			restoreMap := vars.SetupEnv()
 			defer restoreMap.SetupEnv()
 
@@ -65,30 +35,30 @@ var _ = Describe("Config", func() {
 		},
 		Entry(
 			"All config items valid",
-			envMap{VAR_PROJECT_ID: str_ptr("foo"), VAR_SUBSCRIPTION_ID: str_ptr("bar"), VAR_TOPIC_ID: str_ptr("baz")},
+			EnvMap{VAR_PROJECT_ID: StringPointer("foo"), VAR_SUBSCRIPTION_ID: StringPointer("bar"), VAR_TOPIC_ID: StringPointer("baz")},
 			&processor.Config{ProjectID: "foo", SubscriptionID: "bar", TopicID: "baz"},
 		),
 		Entry(
 			"Missing Project ID",
-			envMap{VAR_PROJECT_ID: nil, VAR_SUBSCRIPTION_ID: str_ptr("foo"), VAR_TOPIC_ID: str_ptr("baz")},
+			EnvMap{VAR_PROJECT_ID: nil, VAR_SUBSCRIPTION_ID: StringPointer("foo"), VAR_TOPIC_ID: StringPointer("baz")},
 			&processor.Config{SubscriptionID: "foo", TopicID: "baz"},
 			`.*'Config\.ProjectID'.* for 'ProjectID' failed on the 'required' tag`,
 		),
 		Entry(
 			"Missing subscription ID",
-			envMap{VAR_PROJECT_ID: str_ptr("foo"), VAR_SUBSCRIPTION_ID: nil, VAR_TOPIC_ID: str_ptr("baz")},
+			EnvMap{VAR_PROJECT_ID: StringPointer("foo"), VAR_SUBSCRIPTION_ID: nil, VAR_TOPIC_ID: StringPointer("baz")},
 			&processor.Config{ProjectID: "foo", TopicID: "baz"},
 			`.*Config\.SubscriptionID.* for 'SubscriptionID' failed on the 'required' tag`,
 		),
 		Entry(
 			"Missing topic ID",
-			envMap{VAR_PROJECT_ID: str_ptr("foo"), VAR_SUBSCRIPTION_ID: str_ptr("bar"), VAR_TOPIC_ID: nil},
+			EnvMap{VAR_PROJECT_ID: StringPointer("foo"), VAR_SUBSCRIPTION_ID: StringPointer("bar"), VAR_TOPIC_ID: nil},
 			&processor.Config{ProjectID: "foo", SubscriptionID: "bar"},
 			`.*Config\.TopicID.* for 'TopicID' failed on the 'required' tag`,
 		),
 		Entry(
 			"Missing all required fields",
-			envMap{VAR_PROJECT_ID: nil, VAR_SUBSCRIPTION_ID: nil, VAR_TOPIC_ID: nil},
+			EnvMap{VAR_PROJECT_ID: nil, VAR_SUBSCRIPTION_ID: nil, VAR_TOPIC_ID: nil},
 			&processor.Config{},
 			`.*Config\.ProjectID.* for 'ProjectID' failed on the 'required' tag`,
 			`.*Config\.SubscriptionID.* for 'SubscriptionID' failed on the 'required' tag`,
