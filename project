@@ -57,7 +57,7 @@ exec_test() {
   mkdir ${_REPORTS_DIR_}
 
   echo "Starting the pubsub emulator, topic and subscription creation for testing"
-  docker compose -f ${_DOCKER_COMPOSE_FILE_} up -d mk-subscription > /dev/null 2>&1
+  docker compose -f ${_DOCKER_COMPOSE_FILE_} up -d mk-subscription flyway > /dev/null 2>&1
 
   go test -covermode=count -coverprofile=${_REPORTS_DIR_}/coverage.orig ./...
 
