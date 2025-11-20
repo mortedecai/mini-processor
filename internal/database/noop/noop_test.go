@@ -1,13 +1,13 @@
 package noop_test
 
 import (
-	"github.com/censys/scan-takehome/internal/database/models"
-	"github.com/censys/scan-takehome/internal/database/noop"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	. "github.com/censys/scan-takehome/_test"
 	"github.com/censys/scan-takehome/internal/database"
+	"github.com/censys/scan-takehome/internal/database/models"
+	"github.com/censys/scan-takehome/internal/database/noop"
 	_ "github.com/censys/scan-takehome/internal/database/noop"
 )
 

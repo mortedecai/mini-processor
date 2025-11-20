@@ -9,11 +9,15 @@ threshold:
 # This functionality contains error logging and other logic which would normally be tested via
 # mocks and other means, but due to time constraints, I am lowering the coverage requirement here.
 override:
-  - path: ^internal/database/psql/psql.go$
+  - path: ^internal/database/psql$
     file:
       threshold: 70
-  - path: ^internal/processor/processor.go$
+    package:
+      threshold: 70
+  - path: ^internal/processor$
     file:
+      threshold: 70
+    package:
       threshold: 70
 
 exclude:

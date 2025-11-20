@@ -3,13 +3,13 @@ package psql
 import (
 	"context"
 
-	"github.com/censys/scan-takehome/internal/database"
-	"github.com/censys/scan-takehome/internal/database/config"
-	"github.com/censys/scan-takehome/internal/database/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 
+	"github.com/censys/scan-takehome/internal/database"
+	"github.com/censys/scan-takehome/internal/database/config"
 	"github.com/censys/scan-takehome/internal/database/dal"
+	"github.com/censys/scan-takehome/internal/database/models"
 )
 
 const (

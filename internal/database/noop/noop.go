@@ -1,11 +1,12 @@
 package noop
 
 import (
+	"go.uber.org/zap"
+
 	"github.com/censys/scan-takehome/internal/database"
 	"github.com/censys/scan-takehome/internal/database/config"
 	"github.com/censys/scan-takehome/internal/database/dal"
 	"github.com/censys/scan-takehome/internal/database/models"
-	"go.uber.org/zap"
 )
 
 const (

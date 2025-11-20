@@ -6,14 +6,14 @@ import (
 	"time"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/censys/scan-takehome/internal/database/config"
-	"github.com/censys/scan-takehome/internal/database/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	. "github.com/censys/scan-takehome/_test"
 	"github.com/censys/scan-takehome/internal/database"
+	"github.com/censys/scan-takehome/internal/database/config"
+	"github.com/censys/scan-takehome/internal/database/models"
 	_ "github.com/censys/scan-takehome/internal/database/noop"
 	_ "github.com/censys/scan-takehome/internal/database/psql"
 	"github.com/censys/scan-takehome/internal/processor"
