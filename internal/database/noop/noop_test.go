@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("Noop", func() {
 	var (
-		envMap := EnvMap{
+		envMap = EnvMap{
 			"DATABASE_TYPE":     StringPointer("noop"),
 			"DATABASE_HOST":     StringPointer("localhost"),
 			"DATABASE_USER":     StringPointer("user"),
