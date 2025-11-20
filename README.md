@@ -73,7 +73,10 @@ The project contains both unit tests and integration tests (currently mixed toge
 The tests are automatically run via a GitHub Actions workflow on every push to a pull request in the repository.
 
 After the tests are complete, and automated coverage check is run.
+
 Normally the threshold would be set to 80% across the board, but for the purposes of this takehome project some file and package thresholds are set to 70% to allow for time constraints.
+
+On a successful set of test runs, a text coverage report is generated and posted as a step summary to the workflow.
 
 Additionally, the `docker-compose.yml` file is validated by attempting to bring the system up and then shut it down on each run.
 
