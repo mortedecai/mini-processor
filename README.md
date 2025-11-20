@@ -17,6 +17,8 @@ This will start the pubsub emulator, topic creation, subscription creation, scan
 
 The database can be connected to via `localhost:5432` (assuming the default `DATABASE_TYPE` of `postgres` is used) with your favourite SQL tool (e.g. JetBrains DataGrip).
 
+To stop the system, the command `./project stop` may be used.
+
 ## Adding New Databases
 
 The `internal/database` packages contains a RegisterDB function which allows for new database implementations to be added.
