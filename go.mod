@@ -8,6 +8,7 @@ require (
 	cloud.google.com/go/pubsub v1.33.0
 	github.com/caarlos0/env v3.5.0+incompatible
 	github.com/go-playground/validator/v10 v10.28.0
+	github.com/jackc/pgx/v5 v5.7.6
 	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	go.uber.org/zap v1.27.0
@@ -31,6 +32,9 @@ require (
 	github.com/google/s2a-go v0.1.4 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.11.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
