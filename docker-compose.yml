@@ -47,7 +47,7 @@ services:
       mk-subscription:
         condition: service_completed_successfully
     environment:
-      DATABASE_TYPE: psql
+      DATABASE_TYPE: postgres
       DATABASE_USER: censysTest
       DATABASE_PASSWORD: censysS4mpl3!
       DATABASE_NAME: censys_data

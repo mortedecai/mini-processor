@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	VAR_DB_TYPE     = "DATABASE_TYPE"
 	VAR_DB_HOST     = "DATABASE_HOST"
 	VAR_DB_USER     = "DATABASE_USER"
 	VAR_DB_PASSWORD = "DATABASE_PASSWORD"
@@ -17,11 +18,12 @@ const (
 )
 
 var (
-	hostPtr = StringPointer("localhost")
-	userPtr = StringPointer("user")
-	passPtr = StringPointer("password")
-	portPtr = StringPointer("5432")
-	namePtr = StringPointer("dbname")
+	dbTypePtr = StringPointer("noop")
+	hostPtr   = StringPointer("localhost")
+	userPtr   = StringPointer("user")
+	passPtr   = StringPointer("password")
+	portPtr   = StringPointer("5432")
+	namePtr   = StringPointer("dbname")
 )
 
 var _ = DescribeTable("Config validation testing",
@@ -40,6 +42,7 @@ var _ = DescribeTable("Config validation testing",
 	},
 	Entry("valid config",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: passPtr,
@@ -47,8 +50,20 @@ var _ = DescribeTable("Config validation testing",
 			VAR_DB_NAME:     namePtr,
 		},
 	),
+	Entry("missing db type",
+		EnvMap{
+			VAR_DB_TYPE:     nil,
+			VAR_DB_HOST:     hostPtr,
+			VAR_DB_USER:     userPtr,
+			VAR_DB_PASSWORD: passPtr,
+			VAR_DB_PORT:     portPtr,
+			VAR_DB_NAME:     namePtr,
+		},
+		`.*'Config\.DBType'.*Field validation for 'DBType' failed on the 'required' tag`,
+	),
 	Entry("missing host",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     nil,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: passPtr,
@@ -59,6 +74,7 @@ var _ = DescribeTable("Config validation testing",
 	),
 	Entry("missing user",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     nil,
 			VAR_DB_PASSWORD: passPtr,
@@ -69,6 +85,7 @@ var _ = DescribeTable("Config validation testing",
 	),
 	Entry("missing password",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: nil,
@@ -79,6 +96,7 @@ var _ = DescribeTable("Config validation testing",
 	),
 	Entry("missing port",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: passPtr,
@@ -89,6 +107,7 @@ var _ = DescribeTable("Config validation testing",
 	),
 	Entry("invalid port",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: passPtr,
@@ -99,6 +118,7 @@ var _ = DescribeTable("Config validation testing",
 	),
 	Entry("missing db name",
 		EnvMap{
+			VAR_DB_TYPE:     dbTypePtr,
 			VAR_DB_HOST:     hostPtr,
 			VAR_DB_USER:     userPtr,
 			VAR_DB_PASSWORD: passPtr,
@@ -108,3 +128,21 @@ var _ = DescribeTable("Config validation testing",
 		`.*'Config\.DBName'.*Field validation for 'DBName' failed on the 'required' tag`,
 	),
 )
+
+var _ = Describe("ConnectionString", func() {
+	It("should return the correct connection string", func() {
+		envMap := EnvMap{
+			VAR_DB_TYPE:     StringPointer("postgres"),
+			VAR_DB_HOST:     hostPtr,
+			VAR_DB_USER:     userPtr,
+			VAR_DB_PASSWORD: passPtr,
+			VAR_DB_PORT:     portPtr,
+			VAR_DB_NAME:     namePtr,
+		}
+		restoreMap := envMap.SetupEnv()
+		defer restoreMap.SetupEnv()
+		cfg := config.ConfigFromEnv()
+		expectedConnStr := "postgres://user:password@localhost:5432/dbname?sslmode=disable"
+		Expect(cfg.ConnectionString()).To(Equal(expectedConnStr))
+	})
+})

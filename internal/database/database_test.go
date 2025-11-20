@@ -27,8 +27,7 @@ var _ = Describe("Database Initialization", func() {
 				}
 			}
 		},
-		Entry("Database type not set", EnvMap{"DATABASE_TYPE": nil}, nil, `DATABASE_TYPE environment variable not set`),
-		Entry("Unknown database type", EnvMap{"DATABASE_TYPE": StringPointer("unknown_db")}, nil, `unknown database type: unknown_db`),
+		Entry("Database type not set", EnvMap{"DATABASE_TYPE": nil}, nil, `invalid database configuration: .*'Config\.DBType'.*Field validation for 'DBType' failed on the 'required' tag`),
 		Entry("Invalid database config", EnvMap{
 			"DATABASE_TYPE":     StringPointer("noop"),
 			"DATABASE_HOST":     nil,
@@ -37,6 +36,14 @@ var _ = Describe("Database Initialization", func() {
 			"DATABASE_PORT":     StringPointer("5432"),
 			"DATABASE_NAME":     StringPointer("dbname"),
 		}, nil, `invalid database configuration: .*'Config\.Host'.*Field validation for 'Host' failed on the 'required' tag`),
+		Entry("Unknown database type", EnvMap{
+			"DATABASE_TYPE":     StringPointer("unknown_db"),
+			"DATABASE_HOST":     StringPointer("localhost"),
+			"DATABASE_USER":     StringPointer("user"),
+			"DATABASE_PASSWORD": StringPointer("password"),
+			"DATABASE_PORT":     StringPointer("5432"),
+			"DATABASE_NAME":     StringPointer("dbname"),
+		}, nil, `unknown database type: unknown_db`),
 		Entry("Valid noop database config", EnvMap{
 			"DATABASE_TYPE":     StringPointer("noop"),
 			"DATABASE_HOST":     StringPointer("localhost"),
