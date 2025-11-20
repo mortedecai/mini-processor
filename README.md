@@ -36,6 +36,14 @@ If the database you are adding requires different SQL syntax, you will need to c
 
 > NOTE: The db system may not be perfect for every type of database; it is relatively simplistic to allow for the time constraints of this takehome project.
 
+For the purposes of this takehome project, I used the `ON CONFLICT` syntax of Postgres inserts to handle the upsert logic rather than adding additional go code to handle retrieval, comparison and update of the existing record.
+
+This approach may not be viable for all databases, as not all databases support this syntax.
+
+### No-Op Database
+
+The no-op database was implemented as an aid to testing and to initially verify that reads, inserts and ACKs were working correctly without needing to set up a full database.
+
 ## Testing
 
 The project script provides the ability to run all testing (including integration tests) via: `./project test`
